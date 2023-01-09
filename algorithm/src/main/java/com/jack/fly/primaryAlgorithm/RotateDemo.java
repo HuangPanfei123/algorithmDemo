@@ -1,4 +1,4 @@
-package primaryAlgorithm;
+package com.jack.fly.primaryAlgorithm;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
