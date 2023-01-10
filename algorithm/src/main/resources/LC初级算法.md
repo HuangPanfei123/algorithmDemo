@@ -149,6 +149,95 @@ public class MaxProfitDemo {
 
 思路2：动态规划 //TODO
 
+###### 1.3旋转数组
+
+给你一个数组，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。
+
+**示例 1:**
+
+```java
+输入: nums = [1,2,3,4,5,6,7], k = 3
+输出: [5,6,7,1,2,3,4]
+解释:
+向右轮转 1 步: [7,1,2,3,4,5,6]
+向右轮转 2 步: [6,7,1,2,3,4,5]
+向右轮转 3 步: [5,6,7,1,2,3,4]
+```
+
+**示例 2:**
+
+```java
+输入：nums = [-1,-100,3,99], k = 2
+输出：[3,99,-1,-100]
+解释: 
+向右轮转 1 步: [99,-1,-100,3]
+向右轮转 2 步: [3,99,-1,-100]
+```
+
+**提示：**
+
+```java
+1 <= nums.length <= 105
+-231 <= nums[i] <= 231 - 1
+0 <= k <= 105
+```
+
+参考思路：使用临时数组
+
+可以使用一个临时数组，先把原数组的值存放到一个临时数组中，然后再把临时数组的值重新赋给原数组，重新赋值的时候要保证每个元素都要往后移k位，如果超过数组的长度就从头开始，所以这里可以使用(i + k) % length来计算重新赋值的元素下标
+
+![image.png](https://pic.leetcode-cn.com/1610068849-iinvCs-image.png)
+
+参考代码：
+
+```java
+public class RotateArrDemo {
+    public static void main(String[] args) {
+        int [] arr =  new int[]{1,2,3,4,5,6,7};
+        int[] resultArr = rotateArr(arr, 3);
+        for (int i = 0 ; i < resultArr.length ; i++){
+            System.out.print(resultArr[i]+",");
+        }
+    }
+
+    public static int [] rotateArr(int []  arr ,int  k){
+
+        int len = arr.length;
+
+        //创建一个临时数组
+        int [] tempArr = new int[len];
+        for (int i = 0 ; i < len ; i++){
+            tempArr[i] = arr[i];
+        }
+
+        //然后在把临时数组的值重新放到原数组，并且往右移动k位
+        for (int i = 0 ; i < len ; i++){
+              arr[(i+k)%len] = tempArr[i];
+        }
+
+        return arr;
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ###### 1.11旋转图像 
@@ -269,7 +358,7 @@ public class ReverseStringDemo {
 输出：0
 ```
 
-**思路：**
+**参考思路：**
 
 一位数一位数反转，使用 求余  乘10的方式 参考如下：
 
@@ -306,4 +395,160 @@ public class ReverseDemo {
     
 }
 ```
+
+###### 2.3字符串中的第一个唯一字符
+
+给定一个字符串 s ，找到 它的第一个不重复的字符，并返回它的索引 。如果不存在，则返回 -1 。
+
+**示例 1：**
+
+```java
+输入: s = "leetcode"
+输出: 0
+```
+
+**示例 2:**
+
+```java
+输入: s = "loveleetcode"
+输出: 2
+```
+
+**示例 3:**
+
+```java
+输入: s = "aabb"
+输出: -1
+```
+
+**提示:**
+
+```java
+1 <= s.length <= 105
+s 只包含小写字母
+```
+
+思路：
+
+使用hasmap 存储每个字符出现的次数 再遍历遍历字符数组 ，数组中首先出现第一次的字符输出
+
+代码实现：
+
+```java
+public class FirstUniqCharDemo {
+    public static void main(String[] args) {
+        String s = "loveleetcode";
+        int i = firstUniqChar(s);
+        System.out.println(i);
+    }
+
+    public static int firstUniqChar(String s) {
+        char[] array = s.toCharArray();
+        Map<Character, Integer> map = new HashMap<>();
+        for (char c: array) {
+            map.put(c,map.getOrDefault(c,0)+1);
+        }
+        for (int i = 0; i < array.length; i++) {
+            if (map.get(array[i]) == 1) {
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+```
+
+
+
+###### 2.4有效的字母异位词
+
+给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的字母异位词。
+
+注意：若 s 和 t 中每个字符出现的次数都相同，则称 s 和 t 互为字母异位词。
+
+ 
+
+**示例 1:**
+
+```java
+输入: s = "anagram", t = "nagaram"
+输出: true
+```
+
+**示例 2:**
+
+```java
+输入: s = "rat", t = "car"
+输出: false
+```
+
+**提示:**
+
+```java
+1 <= s.length, t.length <= 5 * 104
+s 和 t 仅包含小写字母
+```
+
+参考思路：
+
+计算两个字符串中字符的差值
+
+- 先统计字符串s中每个字符的数量
+- 减去t中每个字符对应的数量
+
+如果最后结果都是0，说明t是s的字母异位词。
+
+![image-20230110233703064](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20230110233703064.png)
+
+
+
+代码实现：
+
+```java
+public class IsAnagramDemo {
+    public static void main(String[] args) {
+        String s = "anagram", t = "nagaram";
+        boolean anagram = isAnagram(s, t);
+        System.out.println(anagram);
+    }
+
+    public static boolean isAnagram(String s, String t) {
+        char[] sChar = s.toCharArray();
+        char[] tChar = t.toCharArray();
+        if (tChar.length != sChar.length) {
+            return false;
+        }
+        //统计字母(字符)出现的次数
+        int[] count = new int[26];
+        for (int i = 0; i < sChar.length; i++) {
+            count[sChar[i] - 'a']++;
+        }
+
+        for (int i = 0; i < tChar.length; i++) {
+            //该字符在 s中不存在
+            if (count[tChar[i] - 'a'] == 0) {
+                return false;
+            }
+            count[tChar[i] - 'a']--;
+        }
+
+        return true;
+
+    }
+
+
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
