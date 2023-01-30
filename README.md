@@ -313,7 +313,7 @@ public class ContainsDuplicateDemo {
 
 实现代码：
 
-```
+```java
 public class RotateDemo {
     public static void main(String[] args) {
         int [] [] matrix = {{1,2,3},{4,5,6},{7,8,9}};
@@ -911,5 +911,371 @@ public static int strStr(String ss, String pp) {
 
     return -1;
 }
+}
+```
+
+#### 3.链表(3.1-3.8题均为链表图文学中案例)
+
+###### 3.1环形链表 I
+
+给你一个链表的头节点 head ，判断链表中是否有环。
+
+如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。注意：pos 不作为参数进行传递 。仅仅是为了标识链表的实际情况。
+
+如果链表中存在环 ，则返回 true 。 否则，返回 false 。
+
+**示例 1：**
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist.png)
+
+```java
+输入：head = [3,2,0,-4], pos = 1
+输出：true
+解释：链表中有一个环，其尾部连接到第二个节点。
+```
+
+**示例 2：**
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test2.png)
+
+```
+输入：head = [1,2], pos = 0
+输出：true
+解释：链表中有一个环，其尾部连接到第一个节点。
+```
+
+**示例 3：**![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test3.png)
+
+```
+输入：head = [1], pos = -1
+输出：false
+解释：链表中没有环。
+```
+
+**提示：**
+
+- 链表中节点的数目范围是 `[0, 104]`
+- `-105 <= Node.val <= 105`
+- `pos` 为 `-1` 或者链表中的一个 **有效索引** 。
+
+
+
+**思路：**快慢指针
+
+**慢指针针每次走一步，快指针每次走两步**，如果相遇就说明有环，如果有一个为空说明没有环。代码比较简单
+
+```java
+/**
+ * @author:新晋菜鸡
+ * @create: 2023-01-28 22:17
+ * @Description: 环形链表 I
+ */
+public class Solution {
+    public static boolean hasCycle(ListNode head) {
+        ListNode fast = head.next.next;
+        ListNode slow = head.next;
+        while (fast.next!=null){
+            fast =fast.next;
+            slow = slow.next;
+            if(fast == slow){
+                return true;
+            }
+        }
+        return false;
+    }
+    class ListNode{
+        int val;
+        ListNode next;
+        ListNode(int x) {
+            val = x;
+             next = null;
+     }
+    }
+}
+```
+
+
+
+###### 3.2环形链表 II
+
+给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+
+如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（**索引从 0 开始**）。如果 pos 是 -1，则在该链表中没有环。**注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。**
+
+不允许修改 链表。
+
+**示例 1：**![img](https://assets.leetcode.com/uploads/2018/12/07/circularlinkedlist.png)
+
+```
+输入：head = [3,2,0,-4], pos = 1
+输出：返回索引为 1 的链表节点
+解释：链表中有一个环，其尾部连接到第二个节点。
+```
+
+**示例 2：**![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test2.png)
+
+```
+输入：head = [1,2], pos = 0
+输出：返回索引为 0 的链表节点
+解释：链表中有一个环，其尾部连接到第一个节点。
+```
+
+**示例 3：**![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test3.png)
+
+```
+输入：head = [1], pos = -1
+输出：返回 null
+解释：链表中没有环。
+```
+
+**提示：**
+
+- 链表中节点的数目范围在范围 `[0, 104]` 内
+- `-105 <= Node.val <= 105`
+- `pos` 的值为 `-1` 或者链表中的一个有效索引
+
+**思路：快慢指针**
+
+先判断有无环，再进行判断进去的节点
+
+两种假设：
+
+**1、假设环很大**
+
+![image.png](https://pic.leetcode-cn.com/1602292232-mKjJWE-image.png)
+
+假如他们在相遇点相遇了，那么慢指针走过的距离是a+b，快指针走过的距离就是a+b+c+b，因为相同时间内快指针走的距离是慢指针的2倍，所以有a+b+c+b = 2*(a+b)，整理得到a=c，**也就是说从相遇点到环的入口和链表的起始点到环的入口，距离是一样的**。在相遇点的时候我们可以使用两个指针，一个从相遇点开始，一个从链表头开始，他们每次都走一步，直到他们再次相遇位置，那么这个相遇点就是环的入口。
+
+**2**、**环很小**![image.png](https://pic.leetcode-cn.com/1602293014-KzCeuw-image.png)
+
+那么这种情况，快指针在环上转了好几圈了，慢指针才走到环上，假如快指针在环上已经走了`m`圈了，慢指针在环上走了`n`圈，
+
+他们最终在环上相遇，那么
+
+- **慢指针走过的距离是：a+b+n\*(b+c)** (`b+c`其实就是环的长度)
+- **快指针走过的距离是：a+b+m\*(b+c)**
+
+在相同的时间内快指针走过的距离是慢指针的`2`倍，所以有
+
+- **a+b+m\*(b+c) = 2\*(a+b+n\*(b+c))**
+
+整理得到
+
+ **a+b=(m-2n)(b+c)，**
+
+上面b+c其实是环的长度，也就是说a+b等于(m-2n)个环的长度，这个时候我们还可以使用两个指针一个从相遇点开始，一个从链表头开始，这时候就会出现一个现象就是一个指针在链表上走，一个指针在环上转圈，最终会走到第1种情况，就是环很小（我们可以认为链表前面减去m-2n-1个环的长度就是第一种情况了）
+
+参考代码：
+
+```java
+/**
+ * @author:新晋菜鸡
+ * @create: 2023-01-30 21:45
+ * @Description: 环形链表 II
+ */
+public class DetectCycleDemo {
+
+    public ListNode detectCycle(ListNode head) {
+        //快慢指针
+        ListNode fast =  head;
+        ListNode slow =  head;
+
+        //判断是否有环
+        while(fast!=null&&fast.next!= null){
+            fast = fast.next.next;
+            slow = slow.next;
+            //判断是否有环
+            if(fast==slow){
+               while (head!=slow){
+                   head = head.next;
+                   slow =slow.next;
+               }
+                return  slow;
+            }
+
+        }
+
+        return null;
+    }
+    class ListNode{
+        int val;
+        ListNode next;
+        ListNode(int x) {
+            val = x;
+            next = null;
+        }
+    }
+}
+```
+
+###### 3.3相交链表
+
+给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。
+
+图示两个链表在节点 c1 开始相交：
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_statement.png)
+
+题目数据 保证 整个链式结构中不存在环。
+
+注意，函数返回结果后，链表必须 保持其原始结构 。
+
+自定义评测：
+
+评测系统 的输入如下（你设计的程序 不适用 此输入）：
+
+intersectVal - 相交的起始节点的值。如果不存在相交节点，这一值为 0
+listA - 第一个链表
+listB - 第二个链表
+skipA - 在 listA 中（从头节点开始）跳到交叉节点的节点数
+skipB - 在 listB 中（从头节点开始）跳到交叉节点的节点数
+评测系统将根据这些输入创建链式数据结构，并将两个头节点 headA 和 headB 传递给你的程序。如果程序能够正确返回相交节点，那么你的解决方案将被 视作正确答案 。
+
+**示例 1：**
+
+
+
+![img](https://assets.leetcode.com/uploads/2021/03/05/160_example_1_1.png)
+
+```
+输入：intersectVal = 8, listA = [4,1,8,4,5], listB = [5,6,1,8,4,5], skipA = 2, skipB = 3
+输出：Intersected at '8'
+解释：相交节点的值为 8 （注意，如果两个链表相交则不能为 0）。
+从各自的表头开始算起，链表 A 为 [4,1,8,4,5]，链表 B 为 [5,6,1,8,4,5]。
+在 A 中，相交节点前有 2 个节点；在 B 中，相交节点前有 3 个节点。
+— 请注意相交节点的值不为 1，因为在链表 A 和链表 B 之中值为 1 的节点 (A 中第二个节点和 B 中第三个节点) 是不同的节点。换句话说，它们在内存中指向两个不同的位置，而链表 A 和链表 B 中值为 8 的节点 (A 中第三个节点，B 中第四个节点) 在内存中指向相同的位置。
+```
+
+**示例 2：**
+
+![image-20230130223735729](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20230130223735729.png)
+
+```
+输入：intersectVal = 2, listA = [1,9,1,2,4], listB = [3,2,4], skipA = 3, skipB = 1
+输出：Intersected at '2'
+解释：相交节点的值为 2 （注意，如果两个链表相交则不能为 0）。
+从各自的表头开始算起，链表 A 为 [1,9,1,2,4]，链表 B 为 [3,2,4]。
+在 A 中，相交节点前有 3 个节点；在 B 中，相交节点前有 1 个节点。
+
+
+```
+
+**示例 3：**![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_example_3.png)
+
+```
+输入：intersectVal = 0, listA = [2,6,4], listB = [1,5], skipA = 3, skipB = 2
+输出：null
+解释：从各自的表头开始算起，链表 A 为 [2,6,4]，链表 B 为 [1,5]。
+由于这两个链表不相交，所以 intersectVal 必须为 0，而 skipA 和 skipB 可以是任意值。
+这两个链表不相交，因此返回 null 。
+```
+
+**提示：**
+
+listA 中节点数目为 m
+listB 中节点数目为 n
+1 <= m, n <= 3 * 104
+1 <= Node.val <= 105
+0 <= skipA <= m
+0 <= skipB <= n
+如果 listA 和 listB 没有交点，intersectVal 为 0
+如果 listA 和 listB 有交点，intersectVal == listA[skipA] == listB[skipB]
+
+**思路：双指针**
+
+我们还可以使用两个指针，最开始的时候一个指向链表A，一个指向链表B，然后他们每次都要往后移动一位，顺便查看节点是否相等。如果链表A和链表B不相交，基本上没啥可说的，我们这里**假设链表A和链表B相交**。那么就会有两种情况，
+
+- 一种是链表`A`的长度和链表`B`的长度相等，他们每次都走一步，最终在相交点肯定会相遇。
+- 一种是链表`A`的长度和链表`B`的长度不相等，如下图所示
+
+![image.png](https://pic.leetcode-cn.com/1602776172-sopScf-image.png)
+
+虽然他们有交点，但他们的长度不一样，所以他们完美的错开了，即使把链表都走完了也找不到相交点。
+
+我们仔细看下上面的图，如果A指针把链表A走完了，然后再从链表B开始走到相遇点就相当于把这两个链表的所有节点都走了一遍，同理**如果B指针把链表B走完了，然后再从链表A开始一直走到相遇点也相当于把这两个链表的所有节点都走完了**
+
+所以如果A指针走到链表末尾，下一步就让他从链表B开始。同理如果B指针走到链表末尾，下一步就让他从链表A开始。只要这两个链表相交最终肯定会在相交点相遇，如果不相交，最终他们都会同时走到两个链表的末尾，我们来画个图看一下
+
+![image.png](https://pic.leetcode-cn.com/1602776200-FJFAes-image.png)
+
+![image.png](https://pic.leetcode-cn.com/1602776207-NyQrCj-image.png)
+
+如上图所示，`A`指针和`B`指针如果一直走下去，那么他们最终会在相交点相遇，
+
+参考代码：
+
+```java
+public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+    //tempA和tempB我们可以认为是A,B两个指针
+    ListNode tempA = headA;
+    ListNode tempB = headB;
+    while (tempA != tempB) {
+        //如果指针tempA不为空，tempA就往后移一步。
+        //如果指针tempA为空，就让指针tempA指向headB（注意这里是headB不是tempB）
+        tempA = tempA == null ? headB : tempA.next;
+        //指针tempB同上
+        tempB = tempB == null ? headA : tempB.next;
+    }
+    //tempA要么是空，要么是两链表的交点
+    return tempA;
+}
+```
+
+###### 3.4删除链表的倒数第N个节点
+
+给你一个链表，删除链表的倒数第 `n` 个结点，并且返回链表的头结点。
+
+**示例 1：**![img](https://assets.leetcode.com/uploads/2020/10/03/remove_ex1.jpg)
+
+```
+输入：head = [1,2,3,4,5], n = 2
+输出：[1,2,3,5]
+```
+
+**示例 2：**
+
+```
+输入：head = [1], n = 1
+输出：[]
+```
+
+**示例 3：**
+
+```
+输入：head = [1,2], n = 1
+输出：[1]
+```
+
+**提示：**
+
+- 链表中结点的数目为 `sz`
+- `1 <= sz <= 30`
+- `0 <= Node.val <= 100`
+- `1 <= n <= sz`
+
+**参考思路：双指针求解**
+
+上面是先计算链表的长度，其实不计算链表的长度也是可以，我们可以使用两个指针，一个指针fast先走n步，然后另一个指针slow从头结点开始，找到要删除结点的前一个结点，这样就可以完成结点的删除了
+
+```java
+public ListNode removeNthFromEnd(ListNode head, int n) {
+    ListNode fast = head;
+    ListNode slow = head;
+    //fast移n步，
+    for (int i = 0; i < n; i++) {
+        fast = fast.next;
+    }
+    //如果fast为空，表示删除的是头结点
+    if (fast == null)
+        return head.next;
+
+    while (fast.next != null) {
+        fast = fast.next;
+        slow = slow.next;
+    }
+    //这里最终slow不是倒数第n个节点，他是倒数第n+1个节点，
+    //他的下一个结点是倒数第n个节点,所以删除的是他的下一个结点
+    slow.next = slow.next.next;
+    return head;
 }
 ```
