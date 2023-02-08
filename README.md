@@ -287,17 +287,67 @@ public class ContainsDuplicateDemo {
 
 
 
+###### 只出现一次的数字
 
+给你一个 非空 整数数组 nums ，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
 
+你必须设计并实现线性时间复杂度的算法来解决此问题，且该算法只使用常量额外空间。
 
+**示例 1 ：**
 
+```
+输入：nums = [2,2,1]
+输出：1
+```
 
+**示例 2 ：**
 
+```
+输入：nums = [4,1,2,1,2]
+输出：4
+```
 
+**示例 3 ：**
 
+```
+输入：nums = [1]
+输出：1
+```
 
+**提示**：
 
+1 <= nums.length <= 3 * 104
+-3 * 104 <= nums[i] <= 3 * 104
+除了某个元素只出现一次以外，其余每个元素均出现两次。
 
+**思路：异或运算**
+
+**参考代码：**
+
+```java
+package com.jack.fly.primaryAlgorithm;
+
+/**
+ * @author:新晋菜鸡
+ * @create: 2023-02-08 22:58
+ * @Description: 只出现过一次的数字
+ */
+public class SingleNumberDemo {
+    public static void main(String[] args) {
+        int [] nums = {2,2,1};
+        int number = singleNumber(nums);
+        System.out.println(number);
+    }
+    public static int singleNumber(int [] nums){
+        int res = 0;
+        for (int n: nums
+             ) {
+            res = n^res;
+        }
+        return res;
+    }
+}
+```
 
 
 
@@ -678,6 +728,126 @@ public class IsPalindromeDemo {
     }
 }
 ```
+
+###### 2.55获取最长回文串
+
+​	给你一个字符串 `s`，找到 `s` 中最长的回文子串。
+
+如果字符串的反序与原始字符串相同，则该字符串称为回文字符串。
+
+
+
+**示例 1：**
+
+```
+输入：s = "babad"
+输出："bab"
+解释："aba" 同样是符合题意的答案。
+```
+
+**示例 2：**
+
+```
+输入：s = "cbbd"
+输出："bb"
+```
+
+**提示：**
+
+- `1 <= s.length <= 1000`
+- `s` 仅由数字和英文字母组成
+
+**参考思路：中心扩散法。**
+
+中心扩散法怎么去找回文串？
+从每一个位置出发，向两边扩散即可。遇到不是回文的时候结束。举个例子，str = acdbbdaastr=acdbbdaa 我们需要寻找从第一个 b（位置为 33）出发最长回文串为多少。怎么寻找？
+首先往左寻找与当期位置相同的字符，直到遇到不相等为止。
+然后往右寻找与当期位置相同的字符，直到遇到不相等为止。
+最后左右双向扩散，直到左和右不相等。如下图所示：
+
+![img](https://pic.leetcode-cn.com/2f205fcd0493818129e8d3604b2d84d94678fda7708c0e9831f192e21abb1f34.png)
+
+
+
+
+
+每个位置向两边扩散都会出现一个窗口大小（len）。如果 len>maxLen(用来表示最长回文串的长度）。则更新 maxLen 的值。
+因为我们最后要返回的是具体子串，而不是长度，因此，还需要记录一下 maxLen 时的起始位置（maxStart），即此时还要 maxStart=len。
+
+代码实现：
+
+```java
+package com.jack.fly.primaryAlgorithm;
+
+/**
+ * @author:新晋菜鸡
+ * @create: 2023-02-08 21:57
+ * @Description: 最长回文串  中心扩散法
+ */
+public class LongestPalindrome1Demo {
+    public static void main(String[] args) {
+        String palindrome = longestPalindrome("babad");
+        System.out.println(palindrome);
+
+
+
+    }
+
+    public static String  longestPalindrome(String str){
+
+        if(str == null || str.length()==0){
+            return  str;
+        }
+        int strLen = str.length();
+        //记录回文的起点
+        int left = 0;
+        //记录回文的终点
+        int right = 0;
+        //记录每次获取的回文长度
+        int len =1;
+        //记录最大的回文长度
+        int maxLen = 0;
+        //记录截取的起点
+        int maxStart = 0;
+        for (int i = 0; i < strLen; i++) {
+            left = i - 1;
+            right = i + 1;
+            //首先往左寻找与当期位置相同的字符，直到遇到不相等为止。
+            while (left >= 0 && str.charAt(left) == str.charAt(i)) {
+                len++;
+                left--;
+            }
+            //然后往右寻找与当期位置相同的字符，直到遇到不相等为止。
+            while (right < strLen && str.charAt(right) == str.charAt(i)) {
+                len++;
+                right++;
+            }
+            //最后左右双向扩散，直到左和右不相等
+            while (left >= 0 && right < strLen && str.charAt(right) == str.charAt(left)) {
+                len = len + 2;
+                left--;
+                right++;
+            }
+            if (len > maxLen) {
+                maxLen = len;
+                maxStart = left;
+            }
+            len = 1;
+        }
+        return str.substring(maxStart + 1, maxStart + maxLen + 1);
+
+    }
+
+
+
+}
+```
+
+
+
+
+
+
 
 
 
